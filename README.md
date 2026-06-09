@@ -57,7 +57,7 @@ A system loses fairness through every drift event that goes uncorrected, and rec
 ## Quickstart
 
 ```bash
-git clone https://github.com/<your-username>/equilibrium-fairness-reference.git
+git clone https://github.com/maphibayolo-sys/equilibrium-fairness-reference.git
 cd equilibrium-fairness-reference
 
 pip install -r requirements.txt
