@@ -1,0 +1,37 @@
+# Hiring demo configuration
+# UCI Adult dataset, demographic parity gap on sex.
+#
+# This config is illustrative. In a real deployment:
+#  - theta should be set by the accountable threshold-setter, not by the engineer.
+#  - kappa_owner should be a real human party with standing to act.
+#  - window_size should match the cadence of decision-making.
+
+dataset: adult
+dataset_name: hiring_adult
+
+# E₀ — initialisation policy
+e0_policy:
+  # Columns to strip from model inputs. Protected attributes and known proxies.
+  drop_columns: [sex, race]
+  # Protected attribute is retained as a label for monitoring only,
+  # NOT as a model input.
+  protected: sex
+
+# δ — drift signal configuration
+group_a: Male
+group_b: Female
+metric: demographic_parity_gap   # or: equalised_odds_gap
+
+# θ — pre-agreed escalation threshold
+window_size: 500
+theta: 0.05                       # 5 percentage points
+
+# κ — corrective party (named human)
+kappa_owner: "fairness-review@example.org"
+
+# Audit artefact location
+log_path: ./logs/hiring_escalation.jsonl
+
+# Reproducibility
+random_seed: 42
+test_fraction: 0.30

@@ -1,0 +1,33 @@
+# Lending demo configuration
+# UCI German Credit dataset, equalised odds gap on age (under/over 25).
+#
+# Age is a sensitive attribute under EU age-discrimination directives;
+# under/over 25 is the conventional binarisation in the algorithmic
+# fairness literature on this dataset.
+
+dataset: german_credit
+dataset_name: lending_german
+
+# E₀ — initialisation policy
+e0_policy:
+  drop_columns: [age_binarised]
+  protected: age_binarised
+
+# δ — drift signal configuration
+group_a: "young"     # age <= 25
+group_b: "adult"     # age > 25
+metric: equalised_odds_gap
+
+# θ — pre-agreed escalation threshold
+window_size: 100
+theta: 0.10                       # 10 percentage points (tighter dataset, smaller windows)
+
+# κ — corrective party (named human)
+kappa_owner: "credit-fairness@example.org"
+
+# Audit artefact location
+log_path: ./logs/lending_escalation.jsonl
+
+# Reproducibility
+random_seed: 42
+test_fraction: 0.30

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equilibrium Fairness — Demo Report</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #2C3E50; padding: 2rem; line-height: 1.5; }
+    .header { max-width: 900px; margin: 0 auto 2rem; }
+    .header h1 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .header .subtitle { color: #6c757d; font-size: 0.95rem; }
+    .arch-box { max-width: 900px; margin: 0 auto 2rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .arch-box h3 { margin-bottom: 1rem; color: #007B8A; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .arch-stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .arch-stage { border-radius: 6px; padding: 12px; text-align: center; }
+    .arch-stage .num { font-size: 11px; font-weight: 600; opacity: 0.7; }
+    .arch-stage .name { font-size: 15px; font-weight: 600; }
+    .arch-stage .sym { font-size: 13px; opacity: 0.8; margin-top: 2px; }
+    .s1 { background: #E6F1FB; color: #0C447C; }
+    .s2 { background: #E1F5EE; color: #085041; }
+    .s3 { background: #FAEEDA; color: #633806; }
+    .s4 { background: #FAECE7; color: #712B13; }
+    .eq { text-align: center; font-size: 1.2rem; font-weight: 500; margin: 1rem 0 0.5rem; padding: 0.8rem; background: #f0f4f8; border-radius: 6px; }
+    .eq-sub { text-align: center; font-size: 0.85rem; color: #6c757d; margin-bottom: 0.5rem; }
+    .dataset-card { max-width: 900px; margin: 0 auto 2rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .dataset-card h2 { font-size: 1.2rem; margin-bottom: 1rem; }
+    .metrics-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .metric-box { background: #f8f9fa; border-radius: 6px; padding: 10px 14px; flex: 1; min-width: 120px; }
+    .metric-label { font-size: 11px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+    .metric-val { font-size: 16px; font-weight: 600; margin-top: 2px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { text-align: left; padding: 8px 10px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #6c757d; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.3px; }
+    td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+    .footer { max-width: 900px; margin: 2rem auto 0; font-size: 0.8rem; color: #adb5bd; text-align: center; }
+</style>
+</head>
+<body>
+    <div class="header">
+        <h1>Equilibrium Fairness — Demo Report</h1>
+        <div class="subtitle">Reference implementation output · 2026-06-09 12:37 UTC</div>
+    </div>
+
+    <div class="arch-box">
+        <h3>Architecture mapping</h3>
+        <div class="arch-stages">
+            <div class="arch-stage s1"><div class="num">Stage 1</div><div class="name">Initialise</div><div class="sym">E₀</div></div>
+            <div class="arch-stage s2"><div class="num">Stage 2</div><div class="name">Monitor</div><div class="sym">δ</div></div>
+            <div class="arch-stage s3"><div class="num">Stage 3</div><div class="name">Threshold</div><div class="sym">θ</div></div>
+            <div class="arch-stage s4"><div class="num">Stage 4</div><div class="name">Correct</div><div class="sym">κ</div></div>
+        </div>
+        <div class="eq">F(t) = E₀ − Σδᵢ(t) + Σκⱼ(t)</div>
+        <div class="eq-sub">starting equity − uncorrected drift + applied corrections</div>
+    </div>
+
+    
+    <div class="dataset-card">
+        <h2>hiring_adult</h2>
+        <div class="metrics-row">
+            <div class="metric-box">
+                <div class="metric-label">Metric (δ)</div>
+                <div class="metric-val">demographic parity gap</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Threshold (θ)</div>
+                <div class="metric-val">0.05</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Windows</div>
+                <div class="metric-val">3</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Breaches</div>
+                <div class="metric-val" style="color:#D85A30">3 (100%)</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">κ owner</div>
+                <div class="metric-val" style="font-size:13px">fairness-review@example.org</div>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Window</th>
+                    <th>Groups</th>
+                    <th>|δ|</th>
+                    <th>θ</th>
+                    <th>Status</th>
+                    <th>n(A)</th>
+                    <th>n(B)</th>
+                </tr>
+            </thead>
+            <tbody>
+        <tr>
+            <td>0–500</td>
+            <td>Male vs Female</td>
+            <td><strong>0.2340</strong></td>
+            <td>0.05</td>
+            <td style="color:#D85A30;font-weight:600">⚠ BREACH</td>
+            <td>352</td>
+            <td>148</td>
+        </tr>
+        <tr>
+            <td>500–1000</td>
+            <td>Male vs Female</td>
+            <td><strong>0.2419</strong></td>
+            <td>0.05</td>
+            <td style="color:#D85A30;font-weight:600">⚠ BREACH</td>
+            <td>338</td>
+            <td>162</td>
+        </tr>
+        <tr>
+            <td>1000–1500</td>
+            <td>Male vs Female</td>
+            <td><strong>0.1823</strong></td>
+            <td>0.05</td>
+            <td style="color:#D85A30;font-weight:600">⚠ BREACH</td>
+            <td>337</td>
+            <td>163</td>
+        </tr></tbody>
+        </table>
+    </div>
+    <div class="dataset-card">
+        <h2>lending_german</h2>
+        <div class="metrics-row">
+            <div class="metric-box">
+                <div class="metric-label">Metric (δ)</div>
+                <div class="metric-val">equalised odds gap</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Threshold (θ)</div>
+                <div class="metric-val">0.1</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Windows</div>
+                <div class="metric-val">3</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Breaches</div>
+                <div class="metric-val" style="color:#D85A30">2 (67%)</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">κ owner</div>
+                <div class="metric-val" style="font-size:13px">credit-fairness@example.org</div>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Window</th>
+                    <th>Groups</th>
+                    <th>|δ|</th>
+                    <th>θ</th>
+                    <th>Status</th>
+                    <th>n(A)</th>
+                    <th>n(B)</th>
+                </tr>
+            </thead>
+            <tbody>
+        <tr>
+            <td>0–100</td>
+            <td>young vs adult</td>
+            <td><strong>0.2711</strong></td>
+            <td>0.1</td>
+            <td style="color:#D85A30;font-weight:600">⚠ BREACH</td>
+            <td>11</td>
+            <td>89</td>
+        </tr>
+        <tr>
+            <td>100–200</td>
+            <td>young vs adult</td>
+            <td><strong>0.2852</strong></td>
+            <td>0.1</td>
+            <td style="color:#D85A30;font-weight:600">⚠ BREACH</td>
+            <td>17</td>
+            <td>83</td>
+        </tr>
+        <tr>
+            <td>200–300</td>
+            <td>young vs adult</td>
+            <td><strong>0.0419</strong></td>
+            <td>0.1</td>
+            <td style="color:#1D9E75;font-weight:600">✓ within</td>
+            <td>19</td>
+            <td>81</td>
+        </tr></tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        Equilibrium Fairness · DOI: 10.5281/zenodo.20547396 · CC BY 4.0 · Maphi Bayolo
+    </div>
+</body>
+</html>
